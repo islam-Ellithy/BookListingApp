@@ -24,13 +24,18 @@ public class MainActivity extends AppCompatActivity implements MainContract.IVie
     private ArrayList<Book> bookArrayList = null;
     @BindView(R.id.queryEditText)
     protected EditText queryEditText;
-
+    private Integer position;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
         outState.putSerializable("list", bookArrayList);
+
+        int position = listViewBooks.getVerticalScrollbarPosition();
+
+        outState.putInt("position", position);
+
     }
 
     @Override
@@ -42,8 +47,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.IVie
 
         controller = new MainController(this, this);
 
+        boolean flag = false;
         if (savedInstanceState != null) {
             bookArrayList = (ArrayList<Book>) savedInstanceState.getSerializable("list");
+
+            position = savedInstanceState.getInt("position");
+
+            flag = true;
         } else {
             controller.requestBookListFromServer(20, "android");
         }
@@ -51,6 +61,10 @@ public class MainActivity extends AppCompatActivity implements MainContract.IVie
         adapter = new BookListAdapter(this, bookArrayList);
 
         listViewBooks.setAdapter(adapter);
+
+        if (flag) {
+            listViewBooks.smoothScrollToPosition(position);
+        }
 
     }
 
