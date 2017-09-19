@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">BookListingApp</string>
+    <string name="search">Search</string>
+    <string name="e_g_android">e.g android</string>
+</resources>
