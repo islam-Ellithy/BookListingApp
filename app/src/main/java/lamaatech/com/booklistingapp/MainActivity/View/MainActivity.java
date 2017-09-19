@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -13,6 +14,7 @@ import butterknife.OnClick;
 import lamaatech.com.booklistingapp.Book;
 import lamaatech.com.booklistingapp.MainActivity.Controller.MainController;
 import lamaatech.com.booklistingapp.MainActivity.Model.MainContract;
+import lamaatech.com.booklistingapp.Networking.CheckNetwork;
 import lamaatech.com.booklistingapp.R;
 
 public class MainActivity extends AppCompatActivity implements MainContract.IView {
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.IVie
     @BindView(R.id.queryEditText)
     protected EditText queryEditText;
     private Integer position;
+    private CheckNetwork checkNetwork;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -47,15 +50,25 @@ public class MainActivity extends AppCompatActivity implements MainContract.IVie
 
         controller = new MainController(this, this);
 
+        checkNetwork = new CheckNetwork(this);
+
         boolean flag = false;
+
         if (savedInstanceState != null) {
+
             bookArrayList = (ArrayList<Book>) savedInstanceState.getSerializable("list");
 
             position = savedInstanceState.getInt("position");
 
             flag = true;
+
         } else {
-            controller.requestBookListFromServer(20, "android");
+
+            if (checkNetwork.isNetworkAvailable())
+                controller.requestBookListFromServer(20, "android");
+            else
+                showToast("No internet connection");
+
         }
 
         adapter = new BookListAdapter(this, bookArrayList);
@@ -77,8 +90,19 @@ public class MainActivity extends AppCompatActivity implements MainContract.IVie
     @OnClick(R.id.searchButton)
     @Override
     public void onClickSearchButton() {
-        if (queryEditText.length() > 0)
-            controller.requestBookListFromServer(20, queryEditText.getText().toString());
+        if (queryEditText.length() > 0) {
+            if (checkNetwork.isNetworkAvailable()) {
+                controller.requestBookListFromServer(20, queryEditText.getText().toString());
+            } else {
+                showToast("No internet connection");
+            }
+        }else {
+            showToast("Please enter book name");
+        }
+    }
+
+    private void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
 }
