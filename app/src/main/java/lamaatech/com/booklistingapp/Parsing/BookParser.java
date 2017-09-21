@@ -18,15 +18,18 @@ public class BookParser {
         ArrayList<Book> booklist = new ArrayList<>();
         try {
             JSONObject jsonObject = new JSONObject(jsonStr);
+            JSONArray jsonArray;
+            if (jsonObject.has("items")) {
+                jsonArray = jsonObject.getJSONArray("items");
 
-            JSONArray jsonArray = jsonObject.getJSONArray("items");
-
-            Book newBook;
-            for (int i = 0; i < jsonArray.length(); i++) {
-                newBook = new Book(jsonArray.getJSONObject(i).getJSONObject("volumeInfo"));
-                booklist.add(newBook);
+                Book newBook;
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    if (jsonArray.getJSONObject(i).has("volumeInfo")) {
+                        newBook = new Book(jsonArray.getJSONObject(i).getJSONObject("volumeInfo"));
+                        booklist.add(newBook);
+                    }
+                }
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -28,6 +29,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.IVie
     protected EditText queryEditText;
     private Integer position;
     private CheckNetwork checkNetwork;
+
+    @BindView(R.id.empty_list_item)
+    protected TextView emptyListItem;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -73,6 +77,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.IVie
 
         adapter = new BookListAdapter(this, bookArrayList);
 
+        listViewBooks.setEmptyView(emptyListItem);
+
         listViewBooks.setAdapter(adapter);
 
         if (flag) {
@@ -96,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.IVie
             } else {
                 showToast("No internet connection");
             }
-        }else {
+        } else {
             showToast("Please enter book name");
         }
     }

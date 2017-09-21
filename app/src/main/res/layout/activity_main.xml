@@ -34,4 +34,6 @@
         android:visibility="gone" />
 
     <include layout="@layout/book_list_layout" />
+
+
 </LinearLayout>

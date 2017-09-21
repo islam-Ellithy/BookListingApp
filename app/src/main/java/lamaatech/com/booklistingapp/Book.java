@@ -18,8 +18,10 @@ public class Book implements Serializable {
 
     public Book(JSONObject object) {
         try {
-            title = object.getString("title");
-            author = object.getJSONArray("authors").getString(0);
+            if (object.has("title"))
+                title = object.getString("title");
+            if (object.has("authors"))
+                author = object.getJSONArray("authors").getString(0);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -29,15 +31,7 @@ public class Book implements Serializable {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getAuthor() {
         return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
     }
 }
